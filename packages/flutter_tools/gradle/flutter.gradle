@@ -741,6 +741,8 @@ abstract class BaseFlutterTask extends DefaultTask {
                     args "--extra-gen-snapshot-options", "${extraGenSnapshotOptions}"
                 }
                 args "--${buildMode}"
+                args "--verbose"
+                println("============ $executable $workingDir "+args.join(" "))
             }
         }
 
@@ -803,6 +805,7 @@ abstract class BaseFlutterTask extends DefaultTask {
             if (buildMode == "release") {
                 args "--release"
             }
+            println("============ $executable $workingDir "+args.join(" "))
         }
     }
 }
