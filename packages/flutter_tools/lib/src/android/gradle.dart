@@ -46,20 +46,25 @@ class GradleUtils {
     return _cachedExecutable;
   }
 
-  final Map<FlutterProject, GradleProject> _cachedAppProject =
-    <FlutterProject, GradleProject>{};
+  /// Cached app projects. The key is the [FluterProject]'s path, the value is [GradleProject].
+  final Map<String, GradleProject> _cachedAppProject = <String, GradleProject>{};
+
   /// Gets the [GradleProject] for the [project] if built as an app.
   Future<GradleProject> getAppProject(FlutterProject project) async {
-    _cachedAppProject[project] ??= await _readGradleProject(project, isLibrary: false);
-    return _cachedAppProject[project];
+    final String projectPath = project.directory.path;
+    _cachedAppProject[projectPath] ??= await _readGradleProject(project, isLibrary: false);
+    return _cachedAppProject[projectPath];
   }
 
-  final Map<FlutterProject, GradleProject> _cachedLibraryProject =
-    <FlutterProject, GradleProject>{};
+  /// Cached library projects such as plugins or modules.
+  /// The key is the [FluterProject]'s path, the value is [GradleProject].
+  final Map<String, GradleProject> _cachedLibraryProject = <String, GradleProject>{};
+
   /// Gets the [GradleProject] for the [project] if built as a library.
   Future<GradleProject> getLibraryProject(FlutterProject project) async {
-    _cachedLibraryProject[project] ??= await _readGradleProject(project, isLibrary: true);
-    return _cachedLibraryProject[project];
+    final String projectPath = project.directory.path;
+    _cachedLibraryProject[projectPath] ??= await _readGradleProject(project, isLibrary: true);
+    return _cachedLibraryProject[projectPath];
   }
 }
 
@@ -261,7 +266,7 @@ Future<GradleProject> _readGradleProject(
     project = GradleProject(
       <String>['debug', 'profile', 'release'],
       <String>[],
-      fs.path.join(flutterProject.android.hostAppGradleRoot.path, 'app', 'build')
+      fs.path.join(flutterProject.android.hostAppGradleRoot.path, 'app', 'build'),
     );
   }
   status.stop();
@@ -815,9 +820,8 @@ Future<void> _buildGradleProjectV2(
       workingDirectory: flutterProject.android.hostAppGradleRoot.path,
       allowReentrantFlutter: true,
       environment: gradleEnv,
-      // TODO(mklim): if AndroidX warnings are no longer required, this
-      // mapFunction and all its associated variabled can be replaced with just
-      // `filter: ndkMessagefilter`.
+      // TODO(mklim): if AndroidX warnings are no longer required, we can remove
+      // them from this map function.
       mapFunction: (String line) {
         final bool isAndroidXPluginWarning = androidXPluginWarningRegex.hasMatch(line);
         if (!isAndroidXPluginWarning && androidXFailureRegex.hasMatch(line)) {
@@ -935,7 +939,6 @@ Future<void> _buildGradleProjectV2(
 /// Returns [true] if the current app uses AndroidX.
 // TODO(egarciad): https://github.com/flutter/flutter/issues/40800
 // Remove `FlutterManifest.usesAndroidX` and provide a unified `AndroidProject.usesAndroidX`.
-@visibleForTesting
 bool isAppUsingAndroidX(Directory androidDirectory) {
   final File properties = androidDirectory.childFile('gradle.properties');
   if (!properties.existsSync()) {

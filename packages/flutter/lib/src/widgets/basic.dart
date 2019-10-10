@@ -5833,7 +5833,7 @@ class MouseRegion extends SingleChildRenderObjectWidget {
   final PointerExitEventListener onExit;
 
   @override
-  _ListenerElement createElement() => _ListenerElement(this);
+  _MouseRegionElement createElement() => _MouseRegionElement(this);
 
   @override
   RenderMouseRegion createRenderObject(BuildContext context) {
@@ -5866,20 +5866,20 @@ class MouseRegion extends SingleChildRenderObjectWidget {
   }
 }
 
-class _ListenerElement extends SingleChildRenderObjectElement {
-  _ListenerElement(SingleChildRenderObjectWidget widget) : super(widget);
+class _MouseRegionElement extends SingleChildRenderObjectElement {
+  _MouseRegionElement(SingleChildRenderObjectWidget widget) : super(widget);
 
   @override
   void activate() {
     super.activate();
-    final RenderMouseRegion renderMouseListener = renderObject;
-    renderMouseListener.postActivate();
+    final RenderMouseRegion renderMouseRegion = renderObject;
+    renderMouseRegion.postActivate();
   }
 
   @override
   void deactivate() {
-    final RenderMouseRegion renderMouseListener = renderObject;
-    renderMouseListener.preDeactivate();
+    final RenderMouseRegion renderMouseRegion = renderObject;
+    renderMouseRegion.preDeactivate();
     super.deactivate();
   }
 }
@@ -6184,9 +6184,11 @@ class Semantics extends SingleChildRenderObjectWidget {
     bool selected,
     bool toggled,
     bool button,
+    bool link,
     bool header,
     bool textField,
     bool readOnly,
+    bool focusable,
     bool focused,
     bool inMutuallyExclusiveGroup,
     bool obscured,
@@ -6237,9 +6239,11 @@ class Semantics extends SingleChildRenderObjectWidget {
       toggled: toggled,
       selected: selected,
       button: button,
+      link: link,
       header: header,
       textField: textField,
       readOnly: readOnly,
+      focusable: focusable,
       focused: focused,
       inMutuallyExclusiveGroup: inMutuallyExclusiveGroup,
       obscured: obscured,
@@ -6349,9 +6353,11 @@ class Semantics extends SingleChildRenderObjectWidget {
       toggled: properties.toggled,
       selected: properties.selected,
       button: properties.button,
+      link: properties.link,
       header: properties.header,
       textField: properties.textField,
       readOnly: properties.readOnly,
+      focusable: properties.focusable,
       focused: properties.focused,
       liveRegion: properties.liveRegion,
       maxValueLength: properties.maxValueLength,
@@ -6418,9 +6424,11 @@ class Semantics extends SingleChildRenderObjectWidget {
       ..toggled = properties.toggled
       ..selected = properties.selected
       ..button = properties.button
+      ..link = properties.link
       ..header = properties.header
       ..textField = properties.textField
       ..readOnly = properties.readOnly
+      ..focusable = properties.focusable
       ..focused = properties.focused
       ..inMutuallyExclusiveGroup = properties.inMutuallyExclusiveGroup
       ..obscured = properties.obscured
